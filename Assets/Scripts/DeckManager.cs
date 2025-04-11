@@ -1,139 +1,44 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using DG.Tweening;
-
-public enum CardType { TypeA, TypeB, TypeC, TypeD }
 
 public class DeckManager : MonoBehaviour
 {
-    // ÅäÖÃ²ÎÊı
-    [Header("Settings")]
-    public GameObject cardPrefab;
+    public List<GameObject> sceneCards;
     public Transform deckPosition;
-    public Transform playerHandPosition;
-    public Transform opponentHandPosition;
-    public Material[] typeMaterials;
-    public float drawDuration = 0.5f;
-    public float returnDuration = 0.3f;
-    public int cardsPerRound = 1; // Ã¿»ØºÏÃ¿·½³é¿¨Êı
-
-    // ×´Ì¬±äÁ¿
-    private List<GameObject> allCards = new List<GameObject>(); // ËùÓĞ¿¨ÅÆ
-    private List<GameObject> deck = new List<GameObject>();    // µ±Ç°ÅÆ¶Ñ
-    private int playerDrawCount = 0;
-    private int aiDrawCount = 0;
-    private bool isAnimating = false;
 
     void Start()
     {
-        InitializeDeck();
-        StartNewRound();
+        ShuffleAndArrange();
     }
 
-    // ³õÊ¼»¯ËùÓĞ¿¨ÅÆ£¨3A,3B,3C,1D£©
-    void InitializeDeck()
+    public void ShuffleAndArrange()
     {
-        for (int i = 0; i < 3; i++) CreateCard(CardType.TypeA);
-        for (int i = 0; i < 3; i++) CreateCard(CardType.TypeB);
-        for (int i = 0; i < 3; i++) CreateCard(CardType.TypeC);
-        CreateCard(CardType.TypeD);
-    }
-
-    void CreateCard(CardType type)
-    {
-        GameObject card = Instantiate(cardPrefab, deckPosition.position, Quaternion.identity);
-        card.GetComponent<Card>().Initialize(type, typeMaterials[(int)type]);
-        card.SetActive(false);
-        allCards.Add(card);
-    }
-
-    // ¿ªÊ¼ĞÂ»ØºÏ
-    public void StartNewRound()
-    {
-        // ÖØÖÃ¼ÆÊı
-        playerDrawCount = 0;
-        aiDrawCount = 0;
-
-        // »ØÊÕËùÓĞ¿¨ÅÆ
-        ReturnAllCardsToDeck();
-    }
-
-    // »ØÊÕËùÓĞ¿¨ÅÆµ½ÅÆ¶Ñ²¢Ï´ÅÆ
-    void ReturnAllCardsToDeck()
-    {
-        foreach (GameObject card in allCards)
+        if (sceneCards.Count != 4)
         {
-            card.SetActive(false);
-            card.transform.position = deckPosition.position;
-            card.transform.rotation = Quaternion.identity;
-            card.GetComponent<Card>().ResetCard();
+            Debug.LogError("è¯·åœ¨ sceneCards é‡Œæ”¾å…¥ 10 å¼ åœºæ™¯ä¸­å·²æœ‰çš„å¡ç‰Œå¯¹è±¡");
+            return;
         }
 
-        deck.Clear();
-        deck.AddRange(allCards);
-        ShuffleDeck();
-    }
+        List<GameObject> shuffled = new List<GameObject>(sceneCards);
+        Shuffle(shuffled);
 
-    // Fisher-YatesÏ´ÅÆËã·¨
-    void ShuffleDeck()
-    {
-        for (int i = 0; i < deck.Count; i++)
+        for (int i = 0; i < shuffled.Count; i++)
         {
-            int randomIndex = Random.Range(i, deck.Count);
-            GameObject temp = deck[i];
-            deck[i] = deck[randomIndex];
-            deck[randomIndex] = temp;
+            GameObject card = shuffled[i];
+            card.transform.position = deckPosition.position + new Vector3(0, i * 0.1f, 0);
+            card.transform.rotation = Quaternion.Euler(0, 90f, 0);
+            // card.transform.localScale = new Vector3(1f, 1f, 1f);
         }
     }
 
-    // Íæ¼Ò³é¿¨£¨Êó±êµã»÷´¥·¢£©
-    public void PlayerDraw()
+    private void Shuffle(List<GameObject> list)
     {
-        if (CanDraw(true)) StartCoroutine(DrawCardRoutine(true));
-    }
-
-    // »úÆ÷ÈË³é¿¨£¨×Ô¶¯´¥·¢£©
-    public void AIDraw()
-    {
-        if (CanDraw(false)) StartCoroutine(DrawCardRoutine(false));
-    }
-
-    // ³é¿¨Ğ­³Ì
-    IEnumerator DrawCardRoutine(bool isPlayer)
-    {
-        isAnimating = true;
-
-        GameObject card = deck[0];
-        deck.RemoveAt(0);
-        card.SetActive(true);
-
-        // ÒÆ¶¯¶¯»­
-        Transform target = isPlayer ? playerHandPosition : opponentHandPosition;
-        card.transform.DOMove(target.position, drawDuration).SetEase(Ease.OutBack);
-
-        // ·­×ª¶¯»­
-        card.GetComponent<Card>().FlipCard(isPlayer ? 180 : 0, drawDuration);
-
-        // ¸üĞÂ³é¿¨¼ÆÊı
-        if (isPlayer) playerDrawCount++;
-        else aiDrawCount++;
-
-        // ¼ì²â»ØºÏÊÇ·ñ½áÊø
-        if (playerDrawCount >= cardsPerRound && aiDrawCount >= cardsPerRound)
+        for (int i = 0; i < list.Count; i++)
         {
-            yield return new WaitForSeconds(drawDuration + 0.5f);
-            StartNewRound(); // ¿ªÊ¼ĞÂ»ØºÏ
+            int randomIndex = Random.Range(0, list.Count);
+            GameObject temp = list[i];
+            list[i] = list[randomIndex];
+            list[randomIndex] = temp;
         }
-
-        isAnimating = false;
-    }
-
-    // ¼ì²âÊÇ·ñÔÊĞí³é¿¨
-    bool CanDraw(bool isPlayer)
-    {
-        return !isAnimating &&
-               deck.Count > 0 &&
-               (isPlayer ? playerDrawCount < cardsPerRound : aiDrawCount < cardsPerRound);
     }
 }

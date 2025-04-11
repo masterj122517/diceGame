@@ -51,5 +51,5 @@
         "temp/": true,
         "Temp/": true
     },
-    "dotnet.defaultSolution": "上帝从不掷骰子.sln"
+    "dotnet.defaultSolution": "diceGame.sln"
 }
