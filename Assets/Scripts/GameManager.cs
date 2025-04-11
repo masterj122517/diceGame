@@ -29,8 +29,16 @@ public class GameManager : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            Debug.Log("切换到 DicePlay 场景");
             SceneManager.LoadScene("DicePlay");
+        }
+
+        if (Input.GetKeyDown(KeyCode.Y))
+        {
+            DeckManager deckManager = FindObjectOfType<DeckManager>();
+            if (deckManager != null)
+            {
+                deckManager.MoveTopCardToPlayerHand();
+            }
         }
     }
 
