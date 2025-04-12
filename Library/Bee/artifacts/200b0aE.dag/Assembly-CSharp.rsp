@@ -357,7 +357,7 @@
 "Assets/Model/Card/ClickToPlayAnimation.cs"
 "Assets/Scripts/CameraMovement.cs"
 "Assets/Scripts/Card.cs"
-"Assets/Scripts/deckManager.cs"
+"Assets/Scripts/DeckManager.cs"
 "Assets/Scripts/diceControl.cs"
 "Assets/Scripts/DiceManager.cs"
 "Assets/Scripts/DicePlaySceneController.cs"
