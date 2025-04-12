@@ -69,12 +69,12 @@
     <Compile Include="Assets/Scripts/DiceManager.cs" />
     <Compile Include="Assets/Scripts/diceControl.cs" />
     <Compile Include="Assets/Scripts/generateComputerDice.cs" />
+    <Compile Include="Assets/Scripts/DeckManager.cs" />
     <Compile Include="Assets/Scripts/DiceValueDetector.cs" />
     <Compile Include="Assets/Scripts/DicePlaySceneController.cs" />
     <Compile Include="Assets/Scripts/Card.cs" />
     <Compile Include="Assets/Scripts/GameManager.cs" />
     <Compile Include="Assets/Scripts/geneartePlayeyDice.cs" />
-    <Compile Include="Assets/Scripts/deckManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets/TextMesh Pro/Shaders/TMPro.cginc" />
