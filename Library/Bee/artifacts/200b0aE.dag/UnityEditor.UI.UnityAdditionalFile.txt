@@ -1,1 +1,1 @@
-/Users/masterj/programming/diceGame
+/Users/huzhenye/Documents/GitHub/diceGame
