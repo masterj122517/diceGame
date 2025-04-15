@@ -1,11 +1,11 @@
 # ========== Unity 自动生成的文件 ==========
-[Ll]ibrary/
-[Tt]emp/
-[Oo]bj/
+# [Ll]ibrary/
+# [Tt]emp/
+# [Oo]bj/
 [Bb]uild/
 [Bb]uilds/
 [Ll]ogs/
-[Mm]emoryCaptures/
+# [Mm]emoryCaptures/
 
 # ========== 用户设置和缓存 ==========
 UserSettings/
